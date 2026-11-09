@@ -1,5 +1,6 @@
 import { PDFPreview } from '/pdf-preview.js';
 import { SentenceComments, sentenceRange } from '/sentence-comments.js';
+import { LatexCompletion } from '/latex-completion.js';
 
 const $ = id => document.getElementById(id);
 const icon = name => `<svg class="icon"><use href="#i-${name}"/></svg>`;
@@ -44,6 +45,16 @@ const preview = new PDFPreview($('pdf-container'), { previous: $('previous-page'
   onSource: navigateFromPDF, onError: error => toast(error.message, true) });
 const comments = new SentenceComments({ editor, current: () => ({project: state.project?.id, path: state.current, doc: state.docs.get(state.current)}),
   save: saveDoc, open: openFile, toast });
+const completion = new LatexCompletion({editor, current: () => ({project: state.project?.id, path: state.current}),toast,
+  buffers: () => {
+    const buffers = {};let bytes = 0;
+    for (const doc of [...state.docs.values()].sort((a,b) => Number(b.path === state.current) - Number(a.path === state.current))) {
+      if (!doc.dirty || !/\.(tex|bib)$/.test(doc.path)) continue;
+      const content = doc.cm.getValue(), size = new TextEncoder().encode(content).length;
+      if (bytes + size <= 6 * 1024 * 1024) {buffers[doc.path] = content;bytes += size;}
+    }
+    return buffers;
+  }});
 const forwardButton = document.createElement('button');forwardButton.id = 'source-to-pdf';forwardButton.className = 'source-to-pdf';
 forwardButton.textContent = 'PDF로 이동 ↗';forwardButton.title = '문장을 더블클릭해도 PDF의 해당 위치로 이동합니다';
 document.querySelector('.editor-status').insertBefore(forwardButton, document.querySelector('.editor-status .status-spacer'));
@@ -146,7 +157,7 @@ async function refreshTree() {
   const key = state.project.id;
   const result = await api(query('/api/tree', { project: key }));
   if (state.project.id !== key) return;
-  state.tree = result.tree; renderTree();
+  state.tree = result.tree; renderTree(); completion.invalidate();
 }
 function renderTabs() {
   $('tabs').replaceChildren();
@@ -301,7 +312,7 @@ async function selectProject(project) {
     preview.clear();
     $('pdf-container').innerHTML = '<div class="pdf-empty"><div class="empty-document">' + icon('file') + '</div><h2>글이 논문이 되는 곳</h2><p>컴파일하면 완성된 PDF가 여기에 표시됩니다.</p><span>Ctrl / ⌘ + Enter로 컴파일</span></div>';
     state.project = project; state.docs.clear(); state.current = null; state.job = null; state.compileAgain = false; openSequence++;
-    comments.reset();++pdfJumpSequence;
+    comments.reset();completion.invalidate();++pdfJumpSequence;
     state.openFolders = new Set(recall('folders:' + project.id, []));
     $('project-title').textContent = project.title; $('project-picker').title = project.name;
     $('root-label').textContent = project.name.replaceAll('_', ' '); $('root-label').title = project.name;

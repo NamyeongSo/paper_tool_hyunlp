@@ -27,6 +27,7 @@ if str(APP) not in sys.path:
     sys.path.insert(0, str(APP))
 from ai_assistant import AIAssistant, AssistantError
 from sentence_comments import SentenceComments
+from latex_symbols import CompletionIndex
 TEXT_EXTENSIONS = {'.tex', '.bib', '.sty', '.cls', '.bst', '.txt', '.md', '.csv', '.json', '.yaml', '.yml', '.cfg', '.def', '.clo'}
 IGNORED = {'.git', '__pycache__', 'node_modules', 'latex-workspace', 'tests'}
 ENGINES = {'pdflatex': '-pdf', 'lualatex': '-lualatex', 'xelatex': '-xelatex'}
@@ -60,6 +61,7 @@ class Workspace:
         self.processes = {}
         self.ai = AIAssistant(self, config_path=ai_config_path)
         self.comments = SentenceComments(self, APIError, write_json)
+        self.completions = CompletionIndex(self, APIError)
         self.discover()
 
     def discover(self):
@@ -672,6 +674,8 @@ class Handler(BaseHTTPRequestHandler):
                 result = self.workspace.create_entry(data)
             elif route == '/api/pdf-location' and self.command == 'POST':
                 result = self.workspace.pdf_location(data)
+            elif route == '/api/completions' and self.command == 'POST':
+                result = self.workspace.completions.collect(data.get('project'), data.get('buffers'))
             elif route == '/api/comments' and self.command in ('POST', 'PUT', 'DELETE'):
                 result = self.workspace.comments.mutate(data, self.command)
             elif route == '/api/compile' and self.command == 'POST':

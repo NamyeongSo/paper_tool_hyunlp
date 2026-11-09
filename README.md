@@ -12,8 +12,8 @@ Python 3.10 이상이 필요합니다. PDF 컴파일에는 TeX Live의 `latexmk`
 소스↔PDF 위치 이동에는 `synctex`가 필요합니다. LuaLaTeX와 XeLaTeX도 설치되어 있으면 선택할 수 있습니다.
 
 ```bash
-git clone https://github.com/NamyeongSo/paper_write_hyunlp.git
-cd paper_write_hyunlp
+git clone https://github.com/NamyeongSo/paper_tool_hyunlp.git
+cd paper_tool_hyunlp
 python latex-workspace/server.py
 ```
 
@@ -44,6 +44,27 @@ ssh -L 8765:127.0.0.1:8765 user@server
 - 마지막 컴파일 이후 삽입된 줄은 보정합니다. 새로 바뀐 문장이 PDF에 없으면 다시 컴파일해야 합니다. 빈 줄, 주석, 출력되지 않는 정의는 PDF 위치가 없을 수 있습니다.
 - 컴파일 오류에서 파일·줄 번호를 클릭해 이동할 수 있습니다. 실패하더라도 이전의 정상 PDF를 유지합니다.
 - 파일 트리·편집기·PDF 사이의 경계를 끌어 너비를 조절합니다. 작은 화면에서는 소스와 PDF를 위아래로 배치합니다.
+
+## 화면 모드
+
+상단의 달/해 버튼으로 **다크 모드 ↔ 라이트 모드**를 전환합니다.
+처음에는 운영체제의 화면 설정을 따르고, 직접 고른 모드는 브라우저에 저장해 새로고침 후에도 유지합니다.
+같은 브라우저에서 연 별도 PDF 창에도 선택한 모드가 적용됩니다.
+편집기·코멘트·자동완성·AI 도우미·설정창을 함께 전환하며 PDF 문서 자체의 색상은 보존합니다.
+
+## 인용·참조 자동완성
+
+`\cite{`, `\citep{`, `\citet{` 안에서 입력하면 프로젝트의 `.bib`와 `\bibitem` 정의를 제안합니다.
+키뿐 아니라 제목·저자·연도로도 검색할 수 있습니다. `\ref{`, `\eqref{`, `\autoref{`, `\cref{` 등에서는
+프로젝트의 `\label{...}`을 찾고, 관련 절 제목과 정의 파일·줄 번호를 표시합니다.
+
+- **↑ / ↓**로 후보를 선택하고 **Enter / Tab**으로 삽입합니다. 마우스로도 선택할 수 있습니다.
+- **Esc**로 닫고 **Ctrl + Space**로 다시 열거나 후보를 새로 읽습니다.
+- `\cite{first, se}`처럼 여러 키를 쓸 때는 현재 키만 바꾸며 앞뒤 키와 닫는 괄호를 보존합니다.
+- 저장 전 편집 중인 `.tex`·`.bib` 정의도 반영합니다. 원문이나 참고문헌 파일을 자동으로 수정하지 않습니다.
+- 자동완성은 로컬 프로젝트에서만 처리하며 AI API나 외부 검색 서비스에 논문을 보내지 않습니다.
+
+파일당 최대 4 MB, 프로젝트에서 최대 24 MB를 읽습니다. 제한으로 제외된 파일이 있으면 후보 창에서 안내합니다.
 
 ## 문장 코멘트
 
@@ -147,6 +168,8 @@ python latex-workspace/tests/browser_ai_check.py
 python latex-workspace/tests/browser_provider_check.py
 python latex-workspace/tests/browser_exaone_check.py
 python latex-workspace/tests/browser_annotations_check.py
+python latex-workspace/tests/browser_completion_check.py
+python latex-workspace/tests/browser_theme_check.py
 ```
 
 설치된 Chromium 경로는 `FOLIO_BROWSER` 환경변수로 지정할 수 있습니다.
