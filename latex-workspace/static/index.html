@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Folio — LaTeX Workspace</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vendor/codemirror/lib/codemirror.css">
+  <link rel="stylesheet" href="/vendor/codemirror/addon/dialog/dialog.css">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6 7a7 7 0 0 1 11-2l3 7M4 12l3 7a7 7 0 0 0 11-2"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 3h7v7M21 3 11 13M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-14-2 16"/></symbol>
+  <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path d="m12 3 10 18H2zM12 9v5m0 3v1"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></symbol>
+</defs></svg>
+<header class="appbar">
+  <a class="brand" href="/" aria-label="Folio 홈"><span class="brand-mark">f<span>.</span></span><span>folio<span class="brand-sub">LaTeX workspace</span></span></a>
+  <div class="appbar-divider"></div>
+  <button id="project-picker" class="project-picker" title="프로젝트 폴더 선택"><svg class="icon"><use href="#i-folder"/></svg><span id="project-title">프로젝트 여는 중…</span><svg class="icon small"><use href="#i-down"/></svg></button>
+  <span class="local-badge"><span class="dot"></span>LOCAL</span>
+  <div class="header-spacer"></div>
+  <span id="save-state" class="save-state"><svg class="icon"><use href="#i-check"/></svg><span>저장됨</span></span>
+  <button id="compile" class="button primary" title="컴파일 · Ctrl/⌘ + Enter"><svg class="icon"><use href="#i-play"/></svg><span>컴파일</span><kbd>⌘ ↵</kbd></button>
+</header>
+<main id="workspace" class="workspace">
+  <aside id="sidebar" class="sidebar" aria-label="프로젝트 파일">
+    <div class="section-heading"><span>프로젝트 파일</span><div><button id="new-file" class="icon-button" title="새 파일 또는 폴더" aria-label="새 파일 또는 폴더"><svg class="icon"><use href="#i-plus"/></svg></button><button id="refresh-tree" class="icon-button" title="파일 목록 새로고침" aria-label="파일 목록 새로고침"><svg class="icon"><use href="#i-refresh"/></svg></button></div></div>
+    <label class="file-search"><svg class="icon"><use href="#i-search"/></svg><input id="file-search" placeholder="파일 찾기…" aria-label="파일 찾기"><kbd>⌘ P</kbd></label>
+    <div class="project-root"><svg class="icon"><use href="#i-folder"/></svg><span id="root-label">논문 프로젝트</span><span id="file-count" class="count"></span></div>
+    <nav id="file-tree" class="file-tree" aria-label="파일 트리"></nav>
+    <div class="sidebar-footer"><button id="settings-button" class="settings-button"><svg class="icon"><use href="#i-settings"/></svg><span>프로젝트 설정</span><svg class="icon small"><use href="#i-chevron"/></svg></button><div class="local-caption"><span class="dot"></span> 이 컴퓨터의 파일과 연결됨</div></div>
+  </aside>
+  <div class="resizer sidebar-resizer" role="separator" aria-label="파일 트리 너비 조절" tabindex="0" aria-orientation="vertical"></div>
+  <section id="editor-panel" class="editor-panel" aria-label="소스 편집기">
+    <div class="editor-tabs"><div id="tabs" class="tabs" role="tablist" aria-label="열린 파일"></div><button id="toggle-sidebar" class="icon-button" title="파일 트리 접기/펼치기" aria-label="파일 트리 접기/펼치기"><svg class="icon"><use href="#i-panel"/></svg></button></div>
+    <div class="editor-toolbar"><div class="breadcrumb"><svg class="icon"><use href="#i-code"/></svg><span id="breadcrumb">파일을 선택해 주세요</span></div><span id="editor-language" class="language-badge">LaTeX</span><button id="editor-find" class="icon-button" title="본문에서 찾기 · Ctrl/⌘ + F" aria-label="본문에서 찾기"><svg class="icon"><use href="#i-search"/></svg></button></div>
+    <div id="editor-host" class="editor-host"><textarea id="source" aria-label="LaTeX 소스 코드"></textarea></div>
+    <div id="asset-preview" class="asset-preview" hidden></div>
+    <div class="editor-status"><span id="cursor-position">Ln 1, Col 1</span><span id="word-count">0 words</span><span class="status-spacer"></span><span>UTF-8</span><span id="editor-mode">LaTeX</span></div>
+    <div id="ai-resizer" class="ai-resizer" role="separator" aria-label="AI 채팅 창 높이 조절" aria-orientation="horizontal" tabindex="0"></div>
+    <section id="ai-assistant" class="ai-panel" aria-label="AI 교정 도우미"></section>
+  </section>
+  <div class="resizer editor-resizer" role="separator" aria-label="편집기와 PDF 너비 조절" tabindex="0" aria-orientation="vertical"></div>
+  <section id="preview-panel" class="preview-panel" aria-label="PDF 미리보기">
+    <div class="preview-heading"><span class="preview-label"><span class="dot"></span>PDF 미리보기</span><span id="preview-state" class="preview-state">컴파일 대기</span><button id="popout" class="icon-button" title="PDF 별도 창으로 열기" aria-label="PDF 별도 창으로 열기"><svg class="icon"><use href="#i-external"/></svg></button><a id="download" class="icon-button" title="PDF 다운로드" aria-label="PDF 다운로드"><svg class="icon"><use href="#i-download"/></svg></a></div>
+    <div class="pdf-toolbar"><button id="previous-page" class="icon-button" title="이전 페이지" aria-label="이전 페이지"><svg class="icon flip"><use href="#i-chevron"/></svg></button><input id="page-number" type="number" value="1" min="1" aria-label="PDF 페이지"><span class="page-total">/ <span id="page-total">–</span></span><button id="next-page" class="icon-button" title="다음 페이지" aria-label="다음 페이지"><svg class="icon"><use href="#i-chevron"/></svg></button><div class="toolbar-spacer"></div><select id="pdf-zoom" aria-label="PDF 확대 비율"><option value="fit">너비에 맞춤</option><option value="0.75">75%</option><option value="1">100%</option><option value="1.25">125%</option><option value="1.5">150%</option><option value="2">200%</option></select></div>
+    <div id="pdf-container" class="pdf-container"><div class="pdf-empty"><div class="empty-document"><svg class="icon"><use href="#i-file"/></svg></div><h2>글이 논문이 되는 곳</h2><p>컴파일하면 완성된 PDF가 여기에 표시됩니다.</p><span>Ctrl / ⌘ + Enter로 컴파일</span></div></div>
+    <div class="preview-footer"><span id="compile-detail">프로젝트를 준비하고 있습니다</span><button id="show-logs" class="text-button"><svg class="icon"><use href="#i-info"/></svg><span>컴파일 로그</span><span id="error-badge" class="error-badge" hidden>0</span></button></div>
+  </section>
+</main>
+<footer class="app-footer"><span class="footer-project"><span class="dot"></span><span id="footer-project">로컬 작업 공간</span></span><span id="main-label">Main document</span><div class="header-spacer"></div><label class="auto-compile"><input id="auto-compile" type="checkbox"><span class="switch"></span>자동 컴파일</label><button id="shortcuts" class="text-button">키보드 단축키 <kbd>?</kbd></button></footer>
+<section id="logs-panel" class="logs-panel" hidden aria-label="컴파일 로그"><div class="logs-heading"><strong>컴파일 결과</strong><button id="diagnostics-tab" class="log-tab active">오류 및 경고</button><button id="raw-log-tab" class="log-tab">전체 로그</button><div class="header-spacer"></div><button id="close-logs" class="icon-button" aria-label="로그 닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><div id="diagnostics" class="diagnostics"></div><pre id="raw-log" class="raw-log" hidden></pre></section>
+<dialog id="project-dialog"><div class="dialog-heading"><div><span class="eyebrow">YOUR WORKSPACE</span><h2>프로젝트 폴더</h2></div><button class="icon-button dialog-close" aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><p class="dialog-description">폴더를 선택하면 해당 프로젝트의 LaTeX 파일이 열립니다.</p><div id="project-list" class="project-list"></div><p class="dialog-note" id="workspace-path"></p></dialog>
+<dialog id="settings-dialog"><div class="dialog-heading"><div><span class="eyebrow">PROJECT SETTINGS</span><h2>컴파일 설정</h2></div><button class="icon-button dialog-close" aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><label class="field">메인 문서<select id="main-select"></select></label><p class="field-help">섹션 파일을 편집해도 이 문서를 기준으로 전체 논문을 만듭니다.</p><label class="field">LaTeX 컴파일러<select id="engine-select"></select></label><p class="field-help">한글 문서는 kotex 패키지 또는 LuaLaTeX를 사용할 수 있습니다.</p><button id="apply-settings" class="button primary full-width">적용하고 컴파일</button></dialog>
+<dialog id="new-dialog"><div class="dialog-heading"><h2>새 파일 또는 폴더</h2><button class="icon-button dialog-close" aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><form id="new-form"><label class="field">종류<select id="entry-kind"><option value="file">파일</option><option value="folder">폴더</option></select></label><label class="field">프로젝트 안의 경로<input id="entry-path" placeholder="예: sections/discussion.tex" required autocomplete="off"></label><p class="field-help">하위 폴더 경로를 함께 입력할 수 있습니다.</p><p id="entry-error" class="form-error"></p><button type="submit" class="button primary full-width">만들기</button></form></dialog>
+<dialog id="shortcuts-dialog"><div class="dialog-heading"><h2>키보드 단축키</h2><button class="icon-button dialog-close" aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><div class="shortcut-row"><span>저장</span><kbd>Ctrl / ⌘ + S</kbd></div><div class="shortcut-row"><span>전체 문서 컴파일</span><kbd>Ctrl / ⌘ + Enter</kbd></div><div class="shortcut-row"><span>파일 찾기</span><kbd>Ctrl / ⌘ + P</kbd></div><div class="shortcut-row"><span>본문에서 찾기</span><kbd>Ctrl / ⌘ + F</kbd></div><div class="shortcut-row"><span>선택한 문장에 코멘트</span><kbd>Ctrl / ⌘ + Alt + M</kbd></div><div class="shortcut-row"><span>소스 → PDF 위치 이동</span><kbd>문장 더블클릭</kbd></div><div class="shortcut-row"><span>주석 토글</span><kbd>Ctrl / ⌘ + /</kbd></div><div class="shortcut-row"><span>들여쓰기</span><kbd>Tab / Shift + Tab</kbd></div></dialog>
+<dialog id="conflict-dialog"><div class="dialog-heading"><h2>파일이 외부에서 변경되었습니다</h2><button class="icon-button dialog-close" aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><p class="dialog-description"><strong id="conflict-file"></strong><br>다른 창이나 프로그램에서 저장한 내용이 있습니다. 현재 편집본을 다운로드한 뒤 디스크의 최신 파일을 불러올 수 있습니다.</p><button id="download-draft" class="button full-width">현재 편집본 다운로드</button><button id="reload-conflict" class="button primary full-width">디스크의 최신 파일 불러오기</button><p class="dialog-note">현재 편집본은 브라우저 저장소에도 복구본으로 보관됩니다.</p></dialog>
+<div id="toast" class="toast" role="status" hidden></div>
+<script src="/vendor/codemirror/lib/codemirror.js"></script><script src="/vendor/codemirror/mode/stex/stex.js"></script><script src="/vendor/codemirror/addon/edit/matchbrackets.js"></script><script src="/vendor/codemirror/addon/edit/closebrackets.js"></script><script src="/vendor/codemirror/addon/search/searchcursor.js"></script><script src="/vendor/codemirror/addon/search/search.js"></script><script src="/vendor/codemirror/addon/dialog/dialog.js"></script>
+<script type="module" src="/app.js"></script>
+<script type="module" src="/ai-chat.js"></script>
+</body></html>

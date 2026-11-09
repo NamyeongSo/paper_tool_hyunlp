@@ -1,0 +1,27 @@
+{
+  "provider": "exaone",
+  "host": "127.0.0.1",
+  "port": 8000,
+  "model": "local-model",
+  "context_window": 0,
+  "openai_base_url": "https://api.openai.com/v1",
+  "openai_model": "gpt-6-luna",
+  "openai_api_key_env": "OPENAI_API_KEY",
+  "openai_reasoning_effort": "medium",
+  "exaone_base_url": "https://api.exaone.ai/v1",
+  "exaone_model": "k-exaone_v2.5",
+  "exaone_api_key_env": "EXAONE_API_KEY",
+  "exaone_reasoning_effort": "high",
+  "max_output_tokens": 4096,
+  "compaction_threshold": 0.8,
+  "summary_tokens": 1024,
+  "max_steps": 10,
+  "temperature": 0.2,
+  "timeout": 180,
+  "stream": true,
+  "thinking_level": "medium",
+  "thinking_token_budget": 1024,
+  "chat_template_kwargs": {
+    "enable_thinking": false
+  }
+}
