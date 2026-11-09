@@ -1,0 +1,53 @@
+# Publish only the application, documentation, tests, and synthetic demo.
+/*
+!/.gitignore
+!/README.md
+!/VENDOR_NOTICES.md
+!/requirements-dev.txt
+!/latex-workspace/
+!/demo-paper/
+
+# Runtime data and private credentials.
+**/.latex-workspace/
+**/ai_config.json
+**/.env
+**/.env.*
+**/*api-key*
+**/*credentials*
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/comments.json
+**/*.sqlite*
+**/*.db
+
+# Local artifacts, screenshots, backups, and compiler output.
+**/__pycache__/
+**/*.py[cod]
+**/.venv/
+**/tests/artifacts/
+**/*preview*.png
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.pdf
+**/*.aux
+**/*.log
+**/*.out
+**/*.fls
+**/*.fdb_latexmk
+**/*.synctex*
+**/*.bak
+**/*.zip
+
+# Manuscripts and bibliography are private by default.
+**/*.tex
+**/*.bib
+!/demo-paper/main.tex
+!/demo-paper/section.tex
+
+# The demo is an exact allowlist, not a place for personal source files.
+/demo-paper/*
+!/demo-paper/main.tex
+!/demo-paper/section.tex
